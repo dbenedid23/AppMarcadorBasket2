@@ -7,20 +7,20 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import android.content.Context
+import android.os.CountDownTimer
 
 
-
-
-    class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
         var contadorLocal = 0
         var contadorVisitante = 0
         var personalesLocal = 0
         var personalesVisitantes = 0
-
+        lateinit var countDownTimer: CountDownTimer
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             setContentView(R.layout.activity_main)
 
+            val textViewCrono = findViewById<TextView>(R.id.textViewCrono)
             val textViewContadorLocal = findViewById<TextView>(R.id.textViewContadorLocal)
             val textViewContadorVisitante = findViewById<TextView>(R.id.textViewContadorVisitante)
             val textViewPersonalesLocal = findViewById<TextView>(R.id.textViewPersonalesLocal)
@@ -50,6 +50,28 @@ import android.content.Context
             val buttonPerAtaque = findViewById<Button>(R.id.buttonPerAtaque)
             val buttonResetAll = findViewById<Button>(R.id.buttonResetAll)
             val buttonCambio = findViewById<Button>(R.id.buttonCambio)
+            val buttonCrono = findViewById<Button>(R.id.buttonCrono)
+
+            val tiempoTotal: Long = 24 * 1000
+            val intervalo: Long = 1000
+
+            countDownTimer = object : CountDownTimer(tiempoTotal, intervalo) {
+                override fun onTick(millisUntilFinished: Long) {
+                    // Este método se llama en cada intervalo (cada segundo en este caso)
+                    // Actualiza el TextView con el tiempo restante
+                    val segundosRestantes = millisUntilFinished / 1000
+                    val minutos = segundosRestantes / 60
+                    val segundos = segundosRestantes % 60
+                    textViewCrono.text = String.format("%02d:%02d", minutos, segundos)
+                }
+                override fun onFinish() {
+                    // Este método se llama cuando el contador llega a cero
+                    textViewCrono.text = "00:00"
+                }
+            }
+            buttonCrono.setOnClickListener {
+                countDownTimer.start()
+            }
 
             button.setOnClickListener {
                 contadorLocal++

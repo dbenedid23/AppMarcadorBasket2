@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.widget.Button
 import android.widget.TextView
 
@@ -14,11 +15,13 @@ class PalOtro : AppCompatActivity() {
     var contadorVisitante = 0
     var personalesLocal = 0
     var personalesVisitantes = 0
+    lateinit var countDownTimer: CountDownTimer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pal_otro)
 
+        val textViewCronometro = findViewById<TextView>(R.id.textViewCronometro)
         val textViewContadorLocal = findViewById<TextView>(R.id.textViewContadorLocal)
         val textViewContadorVisitante = findViewById<TextView>(R.id.textViewContadorVisitante)
         val textViewPersonalesLocal = findViewById<TextView>(R.id.textViewPersonalesLocal)
@@ -48,6 +51,27 @@ class PalOtro : AppCompatActivity() {
         val buttonPerAtaque = findViewById<Button>(R.id.buttonPerAtaque)
         val buttonResetAll = findViewById<Button>(R.id.buttonResetAll)
         val buttonCambio = findViewById<Button>(R.id.buttonCambio)
+        val buttonCronometro = findViewById<Button>(R.id.buttonCronometro)
+
+        val tiempoTotal: Long = 24 * 1000
+        val intervalo: Long = 1000
+
+        countDownTimer = object : CountDownTimer(tiempoTotal, intervalo) {
+            override fun onTick(millisUntilFinished: Long) {
+
+                val segundosRestantes = millisUntilFinished / 1000
+                val minutos = segundosRestantes / 60
+                val segundos = segundosRestantes % 60
+                textViewCronometro.text = String.format("%02d:%02d", minutos, segundos)
+            }
+            override fun onFinish() {
+
+                textViewCronometro.text = "00:00"
+            }
+        }
+        buttonCronometro.setOnClickListener {
+            countDownTimer.start()
+        }
 
         button.setOnClickListener {
             contadorVisitante++
